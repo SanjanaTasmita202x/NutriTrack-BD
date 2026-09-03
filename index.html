@@ -287,138 +287,26 @@
         </header>
         <main class="container">
             <div class="search-container">
-                <input type="text" class="input-field search-bar"
-                    placeholder="Search foods (e.g., Khichuri, Biryani)...">
+                <input type="text" id="food-search-input" class="input-field search-bar"
+                    placeholder="Search foods (e.g., Khichuri, Biryani)..." onkeyup="searchFoodLibrary()">
             </div>
 
-            <div class="filter-area">
-                <button class="pill-btn active">All</button>
-                <button class="pill-btn">Rice</button>
-                <button class="pill-btn">Meat</button>
-                <button class="pill-btn">Fish</button>
-                <button class="pill-btn">Veg</button>
+
+            <div class="filter-area" id="food-library-filters">
+                <button class="pill-btn active" onclick="filterFoodLibrary('All')">All</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Rice')">Rice</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Bread')">Bread</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Veg')">Veg</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Meat')">Meat</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Fish')">Fish</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Egg')">Egg</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Lentils')">Lentils</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Fruit')">Fruit</button>
+                <button class="pill-btn" onclick="filterFoodLibrary('Dairy')">Dairy</button>
             </div>
 
-            <div class="food-list">
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🍚</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">White Rice</h3>
-                        <p class="food-method">Boiled plain rice</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">130 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🫓</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Ruti</h3>
-                        <p class="food-method">Whole wheat flatbread</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">297 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🥣</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Dal</h3>
-                        <p class="food-method">Lentil soup</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">116 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🐟</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Fried Fish</h3>
-                        <p class="food-method">Shallow fried with spices</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">200 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🥗</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Vegetable Curry</h3>
-                        <p class="food-method">Mixed vegetables</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">60 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🥬</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Shak Bhaji</h3>
-                        <p class="food-method">Sautéed leafy greens</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">80 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🍗</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Chicken Curry</h3>
-                        <p class="food-method">Cooked with spices</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">180 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🥚</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Egg</h3>
-                        <p class="food-method">Boiled</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">155 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🍲</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Khichuri</h3>
-                        <p class="food-method">Rice and lentils</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">180 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card">
-                    <div class="food-image-area"><span class="food-emoji">🍛</span></div>
-                    <div class="food-info-area">
-                        <h3 class="food-name">Chicken Biryani</h3>
-                        <p class="food-method">Spiced rice with chicken</p>
-                        <div class="food-nutrition">
-                            <span class="nutrition-badge">Per 100g</span>
-                            <span class="calorie-text">250 kcal</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="food-list" id="food-library-list">
+                <!-- Dynamically rendered foods will go here -->
             </div>
 
             <div class="coming-soon-notice">
@@ -486,12 +374,13 @@
                 <input type="number" id="bmr-weight" class="input-field" placeholder="e.g., 65">
             </div>
 
-            <button class="primary-btn">Calculate BMR</button>
+            <p id="bmr-error" style="color: #e53e3e; display: none; margin-bottom: 16px; font-weight: 500;"></p>
+            <button class="primary-btn" onclick="calculateBMR()">Calculate BMR</button>
 
             <div class="result-card">
                 <p class="result-label">Your Daily BMR</p>
-                <h2 class="result-value">-- <span>kcal</span></h2>
-                <p class="coming-soon-text">Calculation feature coming soon.</p>
+                <h2 class="result-value" id="bmr-result-value">-- <span>kcal</span></h2>
+                <p class="coming-soon-text" id="bmr-coming-soon">Calculation feature coming soon.</p>
             </div>
         </main>
     </div>
@@ -508,70 +397,9 @@
                 <p>Note: These are general suggestions. Not medical advice.</p>
             </div>
 
-            <!-- Breakfast -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3 class="section-title">Breakfast</h3>
-                </div>
-                <div class="food-list">
-                    <div class="food-card">
-                        <div class="food-image-area"><span class="food-emoji">🫓</span></div>
-                        <div class="food-info-area">
-                            <h3 class="food-name">Lal Attar Ruti & Sabji</h3>
-                            <div class="food-nutrition">
-                                <span class="nutrition-badge">Portion: 2 Ruti, 1 cup Sabji</span>
-                                <span class="calorie-text">~320 kcal</span>
-                            </div>
-                            <p class="food-method" style="margin-top: 4px;">Carbs: 45g | Complex carbs digest slower,
-                                avoiding blood sugar spikes.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="food-list" id="diabetes-guide-list">
+                <!-- Dynamically rendered items will go here -->
             </div>
-
-            <!-- Lunch -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3 class="section-title">Lunch</h3>
-                </div>
-                <div class="food-list">
-                    <div class="food-card">
-                        <div class="food-image-area"><span class="food-emoji">🍚</span></div>
-                        <div class="food-info-area">
-                            <h3 class="food-name">Red Rice, Fish & Dal</h3>
-                            <div class="food-nutrition">
-                                <span class="nutrition-badge">Portion: 1 cup Rice</span>
-                                <span class="calorie-text">~450 kcal</span>
-                            </div>
-                            <p class="food-method" style="margin-top: 4px;">Carbs: 60g | Red rice has lower GI than
-                                white rice.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dinner -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3 class="section-title">Dinner</h3>
-                </div>
-                <div class="food-list">
-                    <div class="food-card">
-                        <div class="food-image-area"><span class="food-emoji">🥣</span></div>
-                        <div class="food-info-area">
-                            <h3 class="food-name">Vegetable Soup & Chicken</h3>
-                            <div class="food-nutrition">
-                                <span class="nutrition-badge">Portion: 1 bowl, 2 pieces</span>
-                                <span class="calorie-text">~300 kcal</span>
-                            </div>
-                            <p class="food-method" style="margin-top: 4px;">Carbs: 20g | Light dinner helps morning
-                                fasting sugar levels.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <p class="coming-soon-notice" style="margin-top: 16px;">More recommendations coming soon.</p>
         </main>
     </div>
 
@@ -587,70 +415,9 @@
                 <p>Note: These are general suggestions. Not medical advice.</p>
             </div>
 
-            <!-- Breakfast -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3 class="section-title">Breakfast</h3>
-                </div>
-                <div class="food-list">
-                    <div class="food-card">
-                        <div class="food-image-area"><span class="food-emoji">🥣</span></div>
-                        <div class="food-info-area">
-                            <h3 class="food-name">Oats with Almonds</h3>
-                            <div class="food-nutrition">
-                                <span class="nutrition-badge">Portion: 1 bowl</span>
-                                <span class="calorie-text">~250 kcal</span>
-                            </div>
-                            <p class="food-method" style="margin-top: 4px;">Fiber: 8g | Fat: 5g | Soluble fiber helps
-                                lower LDL cholesterol.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="food-list" id="cholesterol-guide-list">
+                <!-- Dynamically rendered items will go here -->
             </div>
-
-            <!-- Lunch -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3 class="section-title">Lunch</h3>
-                </div>
-                <div class="food-list">
-                    <div class="food-card">
-                        <div class="food-image-area"><span class="food-emoji">🐟</span></div>
-                        <div class="food-info-area">
-                            <h3 class="food-name">Steamed Ilish & Vegetables</h3>
-                            <div class="food-nutrition">
-                                <span class="nutrition-badge">Portion: 1 piece fish, 1 cup veg</span>
-                                <span class="calorie-text">~400 kcal</span>
-                            </div>
-                            <p class="food-method" style="margin-top: 4px;">Fiber: 4g | Fat: 15g | Rich in Omega-3 fatty
-                                acids which raise HDL.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dinner -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3 class="section-title">Dinner</h3>
-                </div>
-                <div class="food-list">
-                    <div class="food-card">
-                        <div class="food-image-area"><span class="food-emoji">🥗</span></div>
-                        <div class="food-info-area">
-                            <h3 class="food-name">Mixed Dal & Salad</h3>
-                            <div class="food-nutrition">
-                                <span class="nutrition-badge">Portion: 1 cup Dal, large salad</span>
-                                <span class="calorie-text">~280 kcal</span>
-                            </div>
-                            <p class="food-method" style="margin-top: 4px;">Fiber: 12g | Fat: 3g | Plant-based protein
-                                and high fiber content.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <p class="coming-soon-notice" style="margin-top: 16px;">More recommendations coming soon.</p>
         </main>
     </div>
 
@@ -753,15 +520,15 @@
                 <div class="weight-stats">
                     <div class="stat-box">
                         <span class="stat-label">Starting</span>
-                        <span class="stat-value">-- kg</span>
+                        <span class="stat-value" id="stat-starting">-- kg</span>
                     </div>
                     <div class="stat-box">
                         <span class="stat-label">Current</span>
-                        <span class="stat-value">-- kg</span>
+                        <span class="stat-value" id="stat-current">-- kg</span>
                     </div>
                     <div class="stat-box diff">
                         <span class="stat-label">Change</span>
-                        <span class="stat-value" style="color: var(--text-muted);">-- kg</span>
+                        <span class="stat-value" id="stat-change" style="color: var(--text-muted);">-- kg</span>
                     </div>
                 </div>
                 <!-- Chart Placeholder -->
@@ -775,7 +542,7 @@
             <!-- Record Weight Section -->
             <div class="section-card">
                 <h3 class="section-title" style="margin-bottom: var(--spacing-md);">Record Weight</h3>
-                <form class="input-row" style="align-items: flex-end;" onsubmit="event.preventDefault();">
+                <form class="input-row" style="align-items: flex-end;" onsubmit="recordWeight(event)">
                     <div class="input-group" style="margin-bottom: 0;">
                         <label for="weight-date">Date</label>
                         <input type="date" id="weight-date" class="input-field" required>
@@ -788,13 +555,14 @@
                     <button type="submit" class="primary-btn"
                         style="margin-top: 0; width: auto; padding: 12px 20px;">Save</button>
                 </form>
+                <p id="weight-error" style="color: #e53e3e; display: none; margin-top: 12px; font-weight: 500; font-size: 0.9rem;"></p>
             </div>
 
             <div class="section-card">
                 <h3 class="section-title">Weight Log</h3>
 
                 <!-- Empty State -->
-                <div class="empty-state">
+                <div class="empty-state" id="weight-empty-state">
                     <div class="empty-icon">⚖️</div>
                     <p style="font-weight: 500; color: var(--text-main);">No weight records yet.</p>
                     <p class="coming-soon-text" style="margin-top: 4px;">Record your first weight above to start
@@ -802,7 +570,7 @@
                 </div>
 
                 <!-- History List -->
-                <div class="history-list">
+                <div class="history-list" id="weight-history-list">
                 </div>
 
                 <p class="coming-soon-notice" style="margin-top: 16px;">History storage coming soon.</p>
@@ -811,7 +579,6 @@
         </main>
 
     </div>
-    
-    <script src="js/app.js"></script>
+    <script src="js/app.js?v=2"></script>
 </body>
 </html>
