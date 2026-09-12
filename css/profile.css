@@ -1,0 +1,13 @@
+/* Profile Background & Information Interface */
+#profile-setup, #login-screen, #signup-screen {
+    background: linear-gradient(180deg, #f3ebfa 0%, #ffffff 100%);
+}
+
+#profile-setup .section-card, #login-screen .section-card, #signup-screen .section-card {
+    background-color: #ede2f8; /* slightly more visible light lavender */
+}
+
+#profile-setup .input-field, #login-screen .input-field, #signup-screen .input-field {
+    background-color: #f7f2fb; /* very light lavender-white for inputs */
+}
+
