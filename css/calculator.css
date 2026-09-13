@@ -1,0 +1,36 @@
+/* Result Card */
+.result-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.result-label {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.result-value {
+    font-size: 3rem;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+}
+
+.result-value span {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+}
+
+.result-category {
+    font-weight: 500;
+}
+
+.result-category span {
+    color: var(--text-main);
+}
+

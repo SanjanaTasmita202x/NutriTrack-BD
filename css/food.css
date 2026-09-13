@@ -1,0 +1,122 @@
+/* Food Library Specific */
+.search-container {
+    margin-bottom: var(--spacing-md);
+}
+
+.filter-area {
+    display: flex;
+    gap: var(--spacing-sm);
+    overflow-x: auto;
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    align-items: center;
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.filter-area::-webkit-scrollbar {
+    display: none;
+}
+
+.food-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.food-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    gap: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.food-image-area {
+    width: 60px;
+    height: 60px;
+    background-color: var(--border-color);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.food-info-area {
+    flex: 1;
+}
+
+.food-name {
+    font-size: 1.05rem;
+    margin-bottom: 2px;
+}
+
+.food-method {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.food-nutrition {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nutrition-badge {
+    background-color: var(--primary-bg);
+    /* Use page background for badge */
+    color: var(--text-main);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.calorie-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+
+/* New Category Grid Styles */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.category-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.category-card:active {
+    transform: scale(0.98);
+}
+
+.category-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.category-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
