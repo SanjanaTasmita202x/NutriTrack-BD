@@ -1,1 +1,86 @@
 /* Guide styles - currently reusing generic food card styles */
+.guide-toggle-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.guide-toggle-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.4;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    min-height: 150px;
+}
+
+.guide-toggle-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.06);
+}
+
+.guide-toggle-btn .btn-text {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.guide-toggle-btn .btn-emoji {
+    font-size: 2.2rem;
+    display: block;
+    line-height: 1;
+}
+
+/* Green Card */
+.guide-toggle-btn.green-option {
+    background-color: #f0fdf4;
+    color: #166534;
+    border-color: #dcfce7;
+}
+
+.guide-toggle-btn.green-option.active {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+/* Red Card */
+.guide-toggle-btn.red-option {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-color: #fee2e2;
+}
+
+.guide-toggle-btn.red-option.active {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* Blue Card */
+.guide-toggle-btn.blue-option {
+    background-color: #eff6ff;
+    color: #1e40af;
+    border-color: #dbeafe;
+}
+
+.guide-toggle-btn.blue-option.active {
+    background-color: #dbeafe;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+@media (max-width: 480px) {
+    .guide-toggle-container {
+        flex-direction: column;
+    }
+}
