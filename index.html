@@ -57,6 +57,10 @@
                         </div>
                     </div>
 
+                    <p id="login-error"
+                        style="color: #e53e3e; display: none; margin-bottom: 16px; font-weight: 500; font-size: 0.9rem;">
+                    </p>
+
                     <button type="submit" class="primary-btn">Sign In</button>
                 </form>
 
@@ -90,7 +94,7 @@
                         <label for="signup-password">Password</label>
                         <div class="password-input-wrapper">
                             <input type="password" id="signup-password" class="input-field"
-                                placeholder="Create a password" required minlength="6">
+                                placeholder="Create a password" required minlength="8">
                             <button type="button" class="password-toggle-btn"
                                 onclick="togglePasswordVisibility('signup-password')">👁️</button>
                         </div>
@@ -100,7 +104,7 @@
                         <label for="signup-confirm-password">Confirm Password</label>
                         <div class="password-input-wrapper">
                             <input type="password" id="signup-confirm-password" class="input-field"
-                                placeholder="Confirm your password" required minlength="6">
+                                placeholder="Confirm your password" required minlength="8">
                             <button type="button" class="password-toggle-btn"
                                 onclick="togglePasswordVisibility('signup-confirm-password')">👁️</button>
                         </div>
@@ -147,7 +151,7 @@
 
                     <div class="input-group">
                         <label for="profile-name">Full Name <span style="color: #e53e3e;">*</span></label>
-                        <input type="text" id="profile-name" class="input-field" placeholder="e.g., Sanjana" required>
+                        <input type="text" id="profile-name" class="input-field" placeholder="Enter your name" required autocomplete="off">
                     </div>
 
                     <div class="input-group">
@@ -221,16 +225,19 @@
 
                 <!-- Account Dropdown Menu -->
                 <div id="account-dropdown-menu" class="account-dropdown">
-                    <div class="dropdown-item" onclick="handleAccountAction('profile-setup')">
+                    <div id="menu-user-info" class="dropdown-item" style="display: none; font-size: 0.85rem; color: var(--text-muted); cursor: default; border-bottom: 1px solid var(--border-color); word-break: break-all;">
+                        <span style="font-size: 1.1rem;">✉️</span> <span id="menu-user-email">User</span>
+                    </div>
+                    <div id="menu-item-profile" class="dropdown-item" onclick="handleAccountAction('profile-setup')">
                         <span style="font-size: 1.2rem;">👤</span> My Profile
                     </div>
-                    <div class="dropdown-item" onclick="handleAccountAction('login-screen')">
+                    <div id="menu-item-signin" class="dropdown-item" onclick="handleAccountAction('login-screen')">
                         <span style="font-size: 1.2rem;">🔑</span> Sign In
                     </div>
-                    <div class="dropdown-item" onclick="handleAccountAction('signup-screen')">
+                    <div id="menu-item-signup" class="dropdown-item" onclick="handleAccountAction('signup-screen')">
                         <span style="font-size: 1.2rem;">📝</span> Sign Up
                     </div>
-                    <div class="dropdown-item logout" onclick="handleAccountAction('logout')">
+                    <div id="menu-item-logout" class="dropdown-item logout" style="display: none;" onclick="handleAccountAction('logout')">
                         <span style="font-size: 1.2rem;">🚪</span> Log Out
                     </div>
                 </div>
@@ -270,6 +277,12 @@
                     <p class="card-desc">Heart-healthy food recommendations</p>
                 </div>
 
+                <div class="feature-card" onclick="navigate('nutrition-care')">
+                    <div class="card-icon">🩺</div>
+                    <h2 class="card-title">Nutrition Care</h2>
+                    <p class="card-desc">Food recommendations for weight loss & weight gain</p>
+                </div>
+
                 <!-- Row 3 -->
                 <div class="feature-card" onclick="navigate('daily-calorie-log')">
                     <div class="card-icon">📝</div>
@@ -280,7 +293,7 @@
                 <div class="feature-card" onclick="navigate('history-progress')">
                     <div class="card-icon">📈</div>
                     <h2 class="card-title">History & Weight Progress</h2>
-                    <p class="card-desc">View food history and weight changes</p>
+                    <p class="card-desc">Track weight changes and progress</p>
                 </div>
             </div>
         </main>
@@ -309,10 +322,6 @@
             <div class="food-list" id="food-library-list">
                 <!-- Dynamically rendered foods will go here -->
             </div>
-
-            <div class="coming-soon-notice">
-                <p>More Bangladeshi foods coming soon!</p>
-            </div>
         </main>
     </div>
 
@@ -340,7 +349,6 @@
                 <p class="result-label">Your BMI</p>
                 <h2 class="result-value" id="bmi-result-value">--</h2>
                 <p class="result-category">Category: <span id="bmi-result-category">--</span></p>
-                <p class="coming-soon-text" id="bmi-coming-soon">Calculation feature coming soon.</p>
             </div>
         </main>
     </div>
@@ -381,7 +389,6 @@
             <div class="result-card">
                 <p class="result-label">Your Daily BMR</p>
                 <h2 class="result-value" id="bmr-result-value">-- <span>kcal</span></h2>
-                <p class="coming-soon-text" id="bmr-coming-soon">Calculation feature coming soon.</p>
             </div>
 
             <hr class="section-divider">
@@ -448,7 +455,26 @@
                 <p>Note: These are general suggestions. Not medical advice.</p>
             </div>
 
-            <div class="food-list" id="diabetes-guide-list">
+            <div class="guide-toggle-container">
+                <button id="diabetes-btn-suitable" class="guide-toggle-btn green-option" onclick="setDiabetesGuideFilter('suitable')">
+                    <span class="btn-text">Food Suitable<br>for<br>Your Health</span>
+                    <span class="btn-emoji">🥗</span>
+                </button>
+                <button id="diabetes-btn-avoid" class="guide-toggle-btn red-option" onclick="setDiabetesGuideFilter('avoid')">
+                    <span class="btn-text">You Should<br>Avoid</span>
+                    <span class="btn-emoji">🚫</span>
+                </button>
+            </div>
+            
+            <div id="diabetes-suitable-search-container" class="search-container" style="margin-bottom: var(--spacing-md); display: none;">
+                <input type="text" id="diabetes-suitable-search" class="input-field search-bar" placeholder="Search suitable foods..." onkeyup="renderDiabetesGuide()">
+            </div>
+            
+            <div id="diabetes-avoid-search-container" class="search-container" style="margin-bottom: var(--spacing-md); display: none;">
+                <input type="text" id="diabetes-avoid-search" class="input-field search-bar" placeholder="Search foods to avoid..." onkeyup="renderDiabetesGuide()">
+            </div>
+            
+            <div class="food-list" id="diabetes-guide-list" style="display: none;">
                 <!-- Dynamically rendered items will go here -->
             </div>
         </main>
@@ -466,8 +492,92 @@
                 <p>Note: These are general suggestions. Not medical advice.</p>
             </div>
 
-            <div class="food-list" id="cholesterol-guide-list">
+            <div class="guide-toggle-container">
+                <button id="cholesterol-btn-suitable" class="guide-toggle-btn green-option" onclick="setCholesterolGuideFilter('suitable')">
+                    <span class="btn-text">Food Suitable<br>for<br>Your Health</span>
+                    <span class="btn-emoji">🥗</span>
+                </button>
+                <button id="cholesterol-btn-avoid" class="guide-toggle-btn red-option" onclick="setCholesterolGuideFilter('avoid')">
+                    <span class="btn-text">You Should<br>Avoid</span>
+                    <span class="btn-emoji">🚫</span>
+                </button>
+            </div>
+            
+            <div id="cholesterol-suitable-search-container" class="search-container" style="margin-bottom: var(--spacing-md); display: none;">
+                <input type="text" id="cholesterol-suitable-search" class="input-field search-bar" placeholder="Search suitable foods..." onkeyup="renderCholesterolGuide()">
+            </div>
+            
+            <div id="cholesterol-avoid-search-container" class="search-container" style="margin-bottom: var(--spacing-md); display: none;">
+                <input type="text" id="cholesterol-avoid-search" class="input-field search-bar" placeholder="Search foods to avoid..." onkeyup="renderCholesterolGuide()">
+            </div>
+            
+            <div class="food-list" id="cholesterol-guide-list" style="display: none;">
                 <!-- Dynamically rendered items will go here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Nutrition Care Hub View -->
+    <div id="nutrition-care" class="view">
+        <header class="app-header">
+            <button class="icon-button back-btn" onclick="navigate('home-screen')">←</button>
+            <h1 class="header-title">Nutrition Care</h1>
+            <div class="header-placeholder"></div>
+        </header>
+        <main class="container">
+            <div class="coming-soon-notice" style="margin-bottom: var(--spacing-md); text-align: left;">
+                <p style="font-weight: 600; margin-bottom: 4px; color: var(--text-main);">Personalized Nutrition Guidance</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                    Weight management depends on overall energy balance and consistency over time. No single food causes weight loss or weight gain on its own. Choose your goal below to explore curated food categories and portion guidance:
+                </p>
+            </div>
+
+            <div class="guide-toggle-container">
+                <button class="guide-toggle-btn green-option" onclick="openNutritionCareGoal('lose')">
+                    <span class="btn-emoji">🥗</span>
+                    <span class="btn-text">Food You Should Eat<br>to <strong>Lose Weight</strong></span>
+                </button>
+                <button class="guide-toggle-btn blue-option" onclick="openNutritionCareGoal('gain')">
+                    <span class="btn-emoji">🍛</span>
+                    <span class="btn-text">Food You Should Eat<br>to <strong>Gain Weight</strong></span>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Nutrition Care Category Screen -->
+    <div id="nutrition-care-categories" class="view">
+        <header class="app-header">
+            <button class="icon-button back-btn" onclick="navigate('nutrition-care')">←</button>
+            <h1 class="header-title" id="care-category-header-title">Nutrition Categories</h1>
+            <div class="header-placeholder"></div>
+        </header>
+        <main class="container">
+            <div class="coming-soon-notice" id="care-goal-notice" style="margin-bottom: var(--spacing-md); text-align: left;">
+                <!-- Populated dynamically based on chosen goal -->
+            </div>
+
+            <div id="care-category-grid" class="category-grid">
+                <!-- Dynamically populated category cards -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Nutrition Care Food Items View -->
+    <div id="nutrition-care-items" class="view">
+        <header class="app-header">
+            <button class="icon-button back-btn" onclick="navigate('nutrition-care-categories')">←</button>
+            <h1 class="header-title" id="care-items-header-title">Food Items</h1>
+            <div class="header-placeholder"></div>
+        </header>
+        <main class="container">
+            <div class="search-container">
+                <input type="text" id="care-items-search-input" class="input-field search-bar"
+                    placeholder="Search in this category..." onkeyup="searchCareItems()">
+            </div>
+
+            <div class="food-list" id="care-items-food-list">
+                <!-- Dynamically rendered food cards -->
             </div>
         </main>
     </div>
@@ -525,6 +635,24 @@
                 </div>
                 <div class="food-log-list" id="snacks-list"></div>
                 <button class="text-btn add-food-btn" onclick="openFoodSelector('snacks')">+ Add Food</button>
+            </div>
+
+            <!-- Food History Section (Past Days) -->
+            <div class="section-card" id="food-history-section">
+                <div class="section-header">
+                    <h3 class="section-title">Food History</h3>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="food-history-empty-state">
+                    <div class="empty-icon">🍽️</div>
+                    <p style="font-weight: 500; color: var(--text-main);">No previous days' records yet.</p>
+                    <p class="coming-soon-text" style="margin-top: 4px;">Past daily logs will automatically be saved and viewable here when the date changes.</p>
+                </div>
+
+                <!-- Food History List -->
+                <div class="history-list" id="food-history-list">
+                </div>
             </div>
 
         </main>
@@ -610,7 +738,7 @@
                         <input type="number" id="weight-input" class="input-field" placeholder="e.g., 72.5" step="0.1"
                             required>
                     </div>
-                    <button type="submit" class="primary-btn"
+                    <button type="submit" id="weight-submit-btn" class="primary-btn"
                         style="margin-top: 0; width: auto; padding: 12px 20px;">Save</button>
                 </form>
                 <p id="weight-error" style="color: #e53e3e; display: none; margin-top: 12px; font-weight: 500; font-size: 0.9rem;"></p>
@@ -630,25 +758,27 @@
                 <!-- History List -->
                 <div class="history-list" id="weight-history-list">
                 </div>
-
-                <p class="coming-soon-notice" style="margin-top: 16px;">History storage coming soon.</p>
             </div>
 
         </main>
 
     </div>
+    <!-- Supabase JS Client v2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/Supabase.js"></script>
     <script src="js/validation.js"></script>
     <script src="js/food.js"></script>
     <script src="js/foodLog.js"></script>
     <script src="js/history.js"></script>
     <script src="js/diabetesGuide.js"></script>
     <script src="js/cholesterolGuide.js"></script>
+    <script src="js/nutritionCare.js"></script>
     <script src="js/bmi.js"></script>
     <script src="js/bmr.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/calculatorService.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/home.js"></script>
-    <script src="js/Supabase.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

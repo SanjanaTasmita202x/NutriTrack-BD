@@ -34,3 +34,33 @@
     color: var(--text-main);
 }
 
+.section-divider {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: var(--spacing-xl) 0;
+}
+
+.secondary-result {
+    text-align: center;
+    margin: var(--spacing-md) 0;
+}
+
+.secondary-value {
+    font-size: 1.8rem;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+}
+
+.secondary-value span {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.educational-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 16px;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 12px;
+}

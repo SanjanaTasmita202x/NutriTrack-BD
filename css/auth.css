@@ -4,7 +4,7 @@
     top: 60px;
     right: var(--spacing-md);
     background-color: var(--card-bg);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-md, 12px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     width: 220px;
     z-index: 100;
@@ -21,7 +21,7 @@
     cursor: pointer;
     transition: background-color 0.2s;
     font-size: 0.95rem;
-    color: var(--text-color);
+    color: var(--text-main, #111111);
 }
 
 .dropdown-item:last-child {

@@ -11,15 +11,16 @@
         grid-column: span 2;
     }
 
-    /* Row 2: 2 cards */
+    /* Row 2: 3 cards */
     .feature-card:nth-child(4),
-    .feature-card:nth-child(5) {
-        grid-column: span 3;
+    .feature-card:nth-child(5),
+    .feature-card:nth-child(6) {
+        grid-column: span 2;
     }
 
     /* Row 3: 2 cards */
-    .feature-card:nth-child(6),
-    .feature-card:nth-child(7) {
+    .feature-card:nth-child(7),
+    .feature-card:nth-child(8) {
         grid-column: span 3;
     }
 }
