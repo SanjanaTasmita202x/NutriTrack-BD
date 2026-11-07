@@ -1,27 +1,97 @@
 let weightHistory = []; // Local in-memory state, synchronized with Supabase (authenticated) or localStorage (guest)
 let editingWeightId = null;
 let activeLoadedWeightSessionId = '__uninitialized__';
+let activeWeightLoadPromise = null;
+let activeLoadWeightTargetSessionId = null;
+let currentWeightLoadRequestId = 0;
 
 const WEIGHT_STORAGE_KEY = 'nutritrack_weight_history';
 
 /**
  * Loads persisted weight records from Supabase public.weight_logs (authenticated) or localStorage (guest).
  * Ensures full account isolation: authenticated users load only rows where user_id = session.id.
+ * Protected against race conditions and duplicate concurrent fetches using session tracking and request sequencing.
+ * @param {object|null} [explicitSession=null] - Optional Supabase session
+ * @returns {Promise<void>}
  */
-async function loadWeightHistory() {
-    const session = typeof getAuthSession === 'function' ? getAuthSession() : null;
+async function loadWeightHistory(explicitSession = null) {
+    let targetSession = explicitSession;
+    if (!targetSession && typeof getAuthSession === 'function') {
+        targetSession = getAuthSession();
+    }
+
+    // Direct fallback to Supabase client session if getAuthSession() hasn't populated yet
+    if (!targetSession && typeof window !== 'undefined' && window.supabaseClient && window.supabaseClient.auth) {
+        try {
+            const { data } = await window.supabaseClient.auth.getSession();
+            if (data && data.session && data.session.user) {
+                targetSession = {
+                    id: data.session.user.id,
+                    email: data.session.user.email || '',
+                    user: data.session.user
+                };
+                if (typeof currentAuthSession !== 'undefined' && !currentAuthSession) currentAuthSession = data.session;
+                if (typeof currentAuthUser !== 'undefined' && !currentAuthUser) currentAuthUser = data.session.user;
+                if (typeof updateAuthMenuUI === 'function') updateAuthMenuUI();
+            }
+        } catch (e) {
+            console.warn('loadWeightHistory: error inspecting Supabase session directly:', e);
+        }
+    }
+
+    const targetSessionId = targetSession ? (targetSession.user?.id || targetSession.id || null) : null;
+
+    // If session identity changed, immediately clear stale state and update UI to avoid rendering previous user's data
+    if (activeLoadedWeightSessionId !== '__uninitialized__' && activeLoadedWeightSessionId !== targetSessionId) {
+        weightHistory = [];
+        renderWeightHistory(weightHistory);
+        renderWeightProgress(weightHistory);
+        updateWeightSummary(weightHistory);
+    }
+
+    // If an in-flight load is targeting the exact same session ID, reuse it
+    if (activeWeightLoadPromise && activeLoadWeightTargetSessionId === targetSessionId) {
+        return activeWeightLoadPromise;
+    }
+
+    const requestId = ++currentWeightLoadRequestId;
+    activeLoadWeightTargetSessionId = targetSessionId;
+
+    const currentPromise = (async () => {
+        try {
+            await _performLoadWeightHistory(targetSession, requestId);
+        } finally {
+            if (activeWeightLoadPromise === currentPromise) {
+                activeWeightLoadPromise = null;
+                activeLoadWeightTargetSessionId = null;
+            }
+        }
+    })();
+
+    activeWeightLoadPromise = currentPromise;
+    return currentPromise;
+}
+
+/**
+ * Internal execution of weight history loading with sequence verification
+ * @param {object|null} session
+ * @param {number} requestId
+ */
+async function _performLoadWeightHistory(session, requestId) {
     const errorMsg = document.getElementById('weight-error');
 
     // 1. Authenticated User Flow: Supabase public.weight_logs
     if (session && session.id) {
-        activeLoadedWeightSessionId = session.id;
         const client = window.supabaseClient;
         if (!client) {
             console.warn('Supabase client unavailable while loading weight history.');
-            weightHistory = [];
-            renderWeightHistory(weightHistory);
-            renderWeightProgress(weightHistory);
-            updateWeightSummary(weightHistory);
+            if (requestId === currentWeightLoadRequestId) {
+                activeLoadedWeightSessionId = session.id;
+                weightHistory = [];
+                renderWeightHistory(weightHistory);
+                renderWeightProgress(weightHistory);
+                updateWeightSummary(weightHistory);
+            }
             return;
         }
 
@@ -31,6 +101,12 @@ async function loadWeightHistory() {
                 .select('id, user_id, weight, recorded_at, created_at')
                 .eq('user_id', session.id)
                 .order('recorded_at', { ascending: false });
+
+            if (requestId !== currentWeightLoadRequestId) {
+                return; // Newer request already initiated
+            }
+
+            activeLoadedWeightSessionId = session.id;
 
             if (error) {
                 console.error('Error loading weight history from Supabase:', error);
@@ -55,15 +131,18 @@ async function loadWeightHistory() {
                 }));
             }
         } catch (err) {
+            if (requestId !== currentWeightLoadRequestId) return;
             console.error('Unexpected exception loading weight history from Supabase:', err);
             if (errorMsg) {
                 errorMsg.textContent = 'An unexpected error occurred while loading your weight history.';
                 errorMsg.style.display = 'block';
             }
+            activeLoadedWeightSessionId = session.id;
             weightHistory = [];
         }
     } else {
         // 2. Guest User Flow: localStorage
+        if (requestId !== currentWeightLoadRequestId) return;
         activeLoadedWeightSessionId = null;
         if (errorMsg) errorMsg.style.display = 'none';
         try {
@@ -92,9 +171,11 @@ async function loadWeightHistory() {
         }
     }
 
-    renderWeightHistory(weightHistory);
-    renderWeightProgress(weightHistory);
-    updateWeightSummary(weightHistory);
+    if (requestId === currentWeightLoadRequestId) {
+        renderWeightHistory(weightHistory);
+        renderWeightProgress(weightHistory);
+        updateWeightSummary(weightHistory);
+    }
 }
 
 /**
@@ -115,17 +196,6 @@ function saveWeightHistory() {
 
 // Automatically load existing records
 loadWeightHistory();
-
-// Listen to Supabase auth state changes to dynamically switch accounts and clear stale records
-if (typeof window !== 'undefined' && window.supabaseClient && window.supabaseClient.auth) {
-    try {
-        window.supabaseClient.auth.onAuthStateChange(async (event, session) => {
-            await loadWeightHistory();
-        });
-    } catch (e) {
-        console.warn('Error attaching auth state change listener in history.js:', e);
-    }
-}
 
 /**
  * Validates a weight value and date string
@@ -770,16 +840,16 @@ function renderWeightHistory(records) {
 
 /**
  * Renders the weight progress graph or friendly empty state
- * Requires at least 5 valid entries in the last 6 months to unlock the graph.
+ * Requires at least 5 valid entries to unlock the graph.
  * @param {Array} records
  */
 function renderWeightProgress(records) {
     const container = document.querySelector('.chart-placeholder');
     if (!container) return;
 
-    // Filter to valid user records in the 6-month window
-    const sixMonthsRecords = getSixMonthsWeightRecords(records);
-    const count = sixMonthsRecords.length;
+    // Filter to valid user records (count all valid entries belonging to the user)
+    const userRecords = getUserWeightRecords(records);
+    const count = userRecords.length;
 
     // Requirement: Graph appears at exactly 5 valid entries
     if (count < 5) {
@@ -798,7 +868,7 @@ function renderWeightProgress(records) {
         if (count === 0) {
             msgContent = `
                 <div style="font-size: 2rem; margin-bottom: 8px;">📊</div>
-                <p style="font-weight: 600; margin-bottom: 4px; color: var(--text-main);">Six-Month Progress Chart</p>
+                <p style="font-weight: 600; margin-bottom: 4px; color: var(--text-main);">Weight Progress Chart</p>
                 <span class="coming-soon-text" style="color: var(--text-muted); text-align: center; max-width: 320px; display: block; font-size: 0.9rem;">
                     Add 5 weight entries to unlock your graph.
                 </span>
@@ -808,7 +878,7 @@ function renderWeightProgress(records) {
             const entryWord = needed === 1 ? 'entry' : 'entries';
             msgContent = `
                 <div style="font-size: 2rem; margin-bottom: 8px;">📊</div>
-                <p style="font-weight: 600; margin-bottom: 4px; color: var(--text-main);">Six-Month Progress Chart</p>
+                <p style="font-weight: 600; margin-bottom: 4px; color: var(--text-main);">Weight Progress Chart</p>
                 <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary-color, #d53f8c); margin-bottom: 4px;">
                     ${count}/5 progress
                 </div>
@@ -822,7 +892,7 @@ function renderWeightProgress(records) {
     }
 
     // Sort chronologically ascending for the chart
-    const sorted = [...sixMonthsRecords].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
+    const sorted = [...userRecords].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
     const totalPoints = sorted.length;
 
     const weights = sorted.map(r => parseFloat(r.weight));
@@ -889,7 +959,7 @@ function renderWeightProgress(records) {
     container.innerHTML = `
         <div style="width: 100%;">
             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-                <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Six-Month Progress Chart</span>
+                <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Weight Progress Chart</span>
                 <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">${totalPoints} entries</span>
             </div>
             <svg viewBox="0 0 ${svgWidth} ${svgHeight}" style="width: 100%; height: auto; display: block; overflow: visible;" role="img" aria-label="Weight progress chart">
@@ -916,4 +986,7 @@ if (typeof window !== 'undefined') {
     window.editWeightRecord = editWeightRecord;
     window.deleteWeightRecord = deleteWeightRecord;
     window.renderWeightHistory = renderWeightHistory;
+    window.renderWeightProgress = renderWeightProgress;
+    window.updateWeightSummary = updateWeightSummary;
+    window.getUserWeightRecords = getUserWeightRecords;
 }
