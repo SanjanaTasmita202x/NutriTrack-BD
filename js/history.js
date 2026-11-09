@@ -43,6 +43,7 @@ async function loadWeightHistory(explicitSession = null) {
 
     // If session identity changed, immediately clear stale state and update UI to avoid rendering previous user's data
     if (activeLoadedWeightSessionId !== '__uninitialized__' && activeLoadedWeightSessionId !== targetSessionId) {
+        activeLoadedWeightSessionId = targetSessionId;
         weightHistory = [];
         renderWeightHistory(weightHistory);
         renderWeightProgress(weightHistory);
@@ -686,7 +687,9 @@ function renderWeightHistory(records) {
     const session = typeof getAuthSession === 'function' ? getAuthSession() : null;
     const currentSessionId = (session && session.id) ? session.id : null;
     if (activeLoadedWeightSessionId !== '__uninitialized__' && currentSessionId !== activeLoadedWeightSessionId) {
-        loadWeightHistory();
+        if (!activeWeightLoadPromise) {
+            loadWeightHistory();
+        }
         return;
     }
 
