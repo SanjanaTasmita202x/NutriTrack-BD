@@ -131,6 +131,18 @@ function calculateGoal() {
          return;
     }
 
+    const genderSelect = document.getElementById('bmr-gender');
+    const gender = genderSelect ? genderSelect.value : 'male';
+    const minCalorieFloor = gender === 'female' ? 1200 : 1500;
+
+    if (goal === 'lose' && (tdee - 500) < minCalorieFloor) {
+        if (goalErrorMsg) {
+            goalErrorMsg.textContent = `Daily maintenance calories (${tdee} kcal/day) are too low to apply a 500 kcal deficit without falling below the standard threshold of ${minCalorieFloor} kcal/day. Please consult a qualified healthcare professional.`;
+            goalErrorMsg.style.display = 'block';
+        }
+        return;
+    }
+
     if (resultCard) {
         resultCard.style.display = 'block';
     }
@@ -170,4 +182,22 @@ function calculateGoal() {
         goalCaloriesText.textContent = `${tdee} kcal/day`;
         goalProgressText.textContent = "Weight maintenance";
     }
+
+    // Trigger non-blocking remote persistence for authenticated adult profiles
+    if (typeof window !== 'undefined' && window.calculatorService && typeof window.calculatorService.logBmrCalculation === 'function') {
+        const genderEl = document.getElementById('bmr-gender');
+        const genderVal = genderEl ? genderEl.value : 'male';
+        window.calculatorService.logBmrCalculation({
+            age: age,
+            gender: genderVal,
+            heightCm: heightCm,
+            weightKg: currentWeight,
+            activityMultiplier: activityMultiplier,
+            goal: goal,
+            targetWeightKg: !isNaN(targetWeight) ? targetWeight : null
+        }).catch(err => {
+            console.warn('BMR calculation persistence notification:', err);
+        });
+    }
 }
+
