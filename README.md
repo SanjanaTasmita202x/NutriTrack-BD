@@ -1,6 +1,9 @@
 # NutriTrack BD
 
-### Localized Nutrition & Health Companion for Bangladesh
+
+=======
+### Localized Nutrition & Health Companion for Bangladeshi Foods
+>>>>>>> 4b6dcce6d20a80fcdd49df7f9b055237b827b6f9
 
 NutriTrack BD is a lightweight, culturally tailored web application designed for nutrition tracking, calorie management, and dietary health monitoring for Bangladeshi adults. Built as a university CSE Software Development Lab project, it bridges the gap between clinical nutrition principles and authentic Bangladeshi culinary habits.
 
